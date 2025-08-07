@@ -63,5 +63,7 @@ public class CreateCompany {
         Assert.assertNotNull("Список пользователей не должен быть пустым", companyUsers);
         Assert.assertTrue("Список пользователей должен содержать хотя бы одного пользователя", companyUsers.size() > 0);
 
+
+        //для pull request
     }
 }
