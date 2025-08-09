@@ -1,14 +1,9 @@
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.matcher.ResponseAwareMatcher;
 import io.restassured.response.Response;
-import org.hamcrest.Matcher;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.Assert;
-
-import static com.google.common.base.Predicates.equalTo;
 import static io.restassured.RestAssured.given;
 
 public class ApiTest {

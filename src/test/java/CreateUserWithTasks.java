@@ -13,7 +13,6 @@ public class CreateUserWithTasks {
     public static void setup() {
         RestAssured.baseURI = "http://users.bugred.ru";
     }
-
     public static int getRandomNumber(int min, int max) {
         return (int) (Math.random() * (max - min + 1)) + min;
     }
@@ -21,13 +20,15 @@ public class CreateUserWithTasks {
     @Test
     public void createPost_shouldReturn200() {
 
+        String nameInput = "angelina_" + CreateUserWithTasks.getRandomNumber(100000, 999999);
 
+        String emailInput = "test_" + CreateUserWithTasks.getRandomNumber(100000, 999999) + "@mail.ru";
 
-        String requestBody = """
+        String requestBody = String.format("""
 
         {
-        "email": "te12st_cu_214@mail.com",
-        "name": "АнгелинаТест111",
+        "email": "%s",
+        "name": "%s",
         "tasks": [{
         "title": "1",
         "description": "123"
@@ -38,7 +39,7 @@ public class CreateUserWithTasks {
   }
  ]
 }
-    """;
+    """, emailInput, nameInput);
 
         Response response = given()
                 .contentType(ContentType.JSON)
@@ -53,18 +54,18 @@ public class CreateUserWithTasks {
 
         System.out.println(response.asString());
 
+        // ✅ Проверка имени
+        String actualName = response.jsonPath().getString("name");
+        Assert.assertEquals("Имя пользователя в ответе не совпадает с отправленным", nameInput, actualName);
 
-        // Проверка email в ответе
-        String responseEmail = response.jsonPath().getString("email");
-        Assert.assertEquals("Email в ответе не совпадает с ожидаемым", "te12st_cu_214@mail.com", responseEmail);
-
-        // Проверка имени пользователя
-        String responseName = response.jsonPath().getString("name");
-        Assert.assertEquals("Имя в ответе не совпадает с ожидаемым", "АнгелинаТест111", responseName);
+        // ✅ Проверка email
+        String actualEmail = response.jsonPath().getString("email");
+        Assert.assertEquals("Email в ответе не совпадает с отправленным", emailInput, actualEmail);
 
         // Проверка задач
         String task1Title = response.jsonPath().getString("tasks[0].name");
         Assert.assertEquals("Задача 1 в ответе не совпадает с ожидаемой", "1", task1Title);
+
 
         String task2Title = response.jsonPath().getString("tasks[1].name");
         Assert.assertEquals("Задача 2 в ответе не совпадает с ожидаемой", "2", task2Title);
