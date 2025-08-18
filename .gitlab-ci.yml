@@ -1,4 +1,5 @@
-#image: maven:3.8-openjdk-11
+# Используем Maven с Java 11
+image: maven:3.8-openjdk-11
 
 default:
   tags:
@@ -6,7 +7,8 @@ default:
 
 stages:
   - test
-Integration test with Allure:
+
+integration_test_with_allure:
   stage: test
   script:
     - mvn clean test
@@ -14,5 +16,7 @@ Integration test with Allure:
     - mkdir -p allureReports
     - cp -r target/site/allure-maven-plugin/* allureReports/
   artifacts:
+    when: always
     paths:
-      - allureReports/*
+      - allureReports/
+    expire_in: 1 week
