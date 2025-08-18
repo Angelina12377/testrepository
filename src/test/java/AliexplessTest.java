@@ -1,6 +1,6 @@
 import com.codeborne.selenide.Selenide;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 
 public class AliexplessTest extends basetest {
     private final static String BASE_URL = "https://aliexpress.com/";

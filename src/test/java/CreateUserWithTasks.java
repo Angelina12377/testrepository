@@ -1,45 +1,48 @@
+import io.qameta.allure.*;
+import io.qameta.allure.junit5.AllureJunit5;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static io.restassured.RestAssured.given;
 
 public class CreateUserWithTasks {
 
-    @BeforeClass
-    public static void setup() {
+    @BeforeEach
+    public void setup() {
         RestAssured.baseURI = "http://users.bugred.ru";
     }
+
     public static int getRandomNumber(int min, int max) {
         return (int) (Math.random() * (max - min + 1)) + min;
     }
-
+    @ExtendWith(AllureJunit5.class)
     @Test
     public void createPost_shouldReturn200() {
-
-        String nameInput = "angelina_" + CreateUserWithTasks.getRandomNumber(100000, 999999);
-
-        String emailInput = "test_" + CreateUserWithTasks.getRandomNumber(100000, 999999) + "@mail.ru";
+        String nameInput = "angelina_" + getRandomNumber(100000, 999999);
+        String emailInput = "test_" + getRandomNumber(100000, 999999) + "@mail.ru";
 
         String requestBody = String.format("""
-
         {
-        "email": "%s",
-        "name": "%s",
-        "tasks": [{
-        "title": "1",
-        "description": "123"
-  },
-  {
-    "title": "2",
-    "description": "1234"
-  }
- ]
-}
-    """, emailInput, nameInput);
+            "email": "%s",
+            "name": "%s",
+            "tasks": [
+                {
+                    "title": "1",
+                    "description": "123"
+                },
+                {
+                    "title": "2",
+                    "description": "1234"
+                }
+            ]
+        }
+        """, emailInput, nameInput);
 
         Response response = given()
                 .contentType(ContentType.JSON)
@@ -52,22 +55,17 @@ public class CreateUserWithTasks {
                 .statusCode(200)
                 .extract().response();
 
-        System.out.println(response.asString());
-
         // ✅ Проверка имени
-        String actualName = response.jsonPath().getString("name");
-        Assert.assertEquals("Имя пользователя в ответе не совпадает с отправленным", nameInput, actualName);
+        Assertions.assertEquals(nameInput, response.jsonPath().getString("name"), "Имя пользователя в ответе не совпадает с отправленным");
 
         // ✅ Проверка email
-        String actualEmail = response.jsonPath().getString("email");
-        Assert.assertEquals("Email в ответе не совпадает с отправленным", emailInput, actualEmail);
+        Assertions.assertEquals(emailInput, response.jsonPath().getString("email"), "Email в ответе не совпадает с отправленным");
 
-        // Проверка задач
-        String task1Title = response.jsonPath().getString("tasks[0].name");
-        Assert.assertEquals("Задача 1 в ответе не совпадает с ожидаемой", "1", task1Title);
+        // ✅ Проверка задач
+        Assertions.assertEquals("1", response.jsonPath().getString("tasks[0].name"), "Задача 1 в ответе не совпадает с ожидаемой");
+        Assertions.assertEquals("2", response.jsonPath().getString("tasks[1].name"), "Задача 2 в ответе не совпадает с ожидаемой");
 
-
-        String task2Title = response.jsonPath().getString("tasks[1].name");
-        Assert.assertEquals("Задача 2 в ответе не совпадает с ожидаемой", "2", task2Title);
+        // 🔍 (опционально) печать тела ответа
+        System.out.println(response.asString());
     }
 }

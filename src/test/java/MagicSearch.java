@@ -1,19 +1,20 @@
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import java.util.List;
 import java.util.Map;
-
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static io.restassured.RestAssured.given;
 
-public class MagicSearch {
+public class
+MagicSearch {
 
-    @BeforeClass
-    public static void setup() {
+    @BeforeEach
+    public void setup() {
         RestAssured.baseURI = "http://users.bugred.ru";
     }
 
@@ -45,7 +46,7 @@ public class MagicSearch {
         boolean hasUser = results.stream().anyMatch(r -> "user".equals(r.get("type")));
         boolean hasCompany = results.stream().anyMatch(r -> "company".equals(r.get("type")));
 
-        Assert.assertTrue("No users found", hasUser);
-        Assert.assertTrue("No companies found", hasCompany);
+        Assertions.assertTrue(hasUser, "No users found");
+        Assertions.assertTrue(hasCompany, "No companies found");
     }
 }

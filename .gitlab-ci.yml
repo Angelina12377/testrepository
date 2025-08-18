@@ -1,0 +1,18 @@
+#image: maven:3.8-openjdk-11
+
+default:
+  tags:
+    - testrunner
+
+stages:
+  - test
+Integration test with Allure:
+  stage: test
+  script:
+    - mvn clean test
+    - mvn allure:report
+    - mkdir -p allureReports
+    - cp -r target/site/allure-maven-plugin/* allureReports/
+  artifacts:
+    paths:
+      - allureReports/*

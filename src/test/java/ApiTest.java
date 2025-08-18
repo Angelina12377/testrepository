@@ -1,15 +1,17 @@
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
+
 import static io.restassured.RestAssured.given;
 
 public class ApiTest {
 
-    @BeforeClass
-    public static void setup() {
+    @BeforeEach
+    public void setup() {
         RestAssured.baseURI = "http://users.bugred.ru";
     }
 
@@ -22,14 +24,15 @@ public class ApiTest {
 
 
         String emailInput = "test_" + getRandomNumber(100000, 999999) + "@mail.ru";
+        String namelInput = "test_" + getRandomNumber(100000, 999999);
 
         String requestBody = String.format("""
     {
         "email": "%s",
-        "name": "123Ангели43345h5232335452342",
+        "name": "%s",
         "password": "2"
     }
-    """, emailInput);
+    """, emailInput,namelInput);
 
         Response response = given()
                 .contentType(ContentType.JSON)
@@ -43,6 +46,6 @@ public class ApiTest {
                 .extract().response();
         String email = response.jsonPath().getString("email");
 
-        Assert.assertEquals(emailInput, email);
+        Assertions.assertEquals(emailInput, email);
     }
 }
