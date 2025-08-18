@@ -1,4 +1,3 @@
-# Используем Maven с Java 11
 image: maven:3.8-openjdk-11
 
 default:
@@ -11,10 +10,7 @@ stages:
 integration_test_with_allure:
   stage: test
   script:
-    - mvn clean test
-    - mvn allure:report
-    - mkdir -p allureReports
-    - cp -r target/site/allure-maven-plugin/* allureReports/
+    - mvn clean verify
   artifacts:
     when: always
     paths:
